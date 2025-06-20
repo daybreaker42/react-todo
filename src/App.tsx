@@ -17,6 +17,7 @@ function App() {
   });
   // todo input ref list
   const todoInputRefList = useRef<Array<HTMLInputElement | null>>([]);
+  // const todoRefList = useRef
 
   /**
    * 할 일 추가 함수
@@ -128,6 +129,22 @@ function App() {
     setTodoList([]);
   }
 
+  const toggleFinished = (index: number) => {
+    setTodoList(prev => {
+      const newList = prev.map((todo, todoIndex) => {
+        if (index == todoIndex) {
+          return {
+            ...todo,
+            finished: !todo.finished
+          };
+        } else {
+          return todo;
+        }
+      });
+      return newList;
+    })
+  }
+
   // 키보드 이벤트 핸들러
   // - Enter 키를 누르면 addTodo 함수 호출
   const addKeyHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -164,19 +181,28 @@ function App() {
         </div>
         <ul id="content" className='mt-2 p-4'>
           {todoList.map((todo, index) => {
-            return <li key={todo.id}
-              className={`${index < todoList.length - 1 ? 'border-b-1' : ''} border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
+            return (
+              <li key={todo.id} onDoubleClick={() => toggleFinished(index)}
+                className={`border-b-1:first border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
               {/* todo 내용 */}
               <div className='flex gap-2 items-center'>
                 <span className='w-8 px-1'>{index + 1}</span>
+                  {/* finished checker */}
+                  <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)}
+                    className='w-5 h-5 accent-blue-500' />
                 {isEdittingList[index] ? (
-                  <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }} onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                    if (event.key === 'Enter') {
-                      editTodo(index);
-                    }
-                  }}
+                    // 내용 input
+                    <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
+                      onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (event.key === 'Enter') {
+                          editTodo(index);
+                        }
+                      }}
                     className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
-                ) : <span>{todo.text}</span>}
+                  ) :
+                    // 내용 text
+                    <span className={`${todo.finished ? 'line-through text-gray-500' : ''}`}>{todo.text}</span>
+                  }
               </div>
 
               {/* todo 수정/삭제 버튼 */}
@@ -187,6 +213,7 @@ function App() {
                 <button onClick={() => removeTodo(index)} className='delete'>삭제</button>
               </div>
             </li>
+            );
           })}
         </ul>
       </div>
