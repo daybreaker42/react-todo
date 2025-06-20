@@ -29,6 +29,3 @@ button.delete{
 .finished .todo-text{
     @apply line-through text-gray-500;
 }
-li > div > span:not(span.todo-text):after {
-    content:" |";
-}

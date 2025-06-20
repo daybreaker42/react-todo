@@ -191,7 +191,8 @@ function App() {
                 className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
               {/* todo 내용 */}
               <div className='flex gap-2 items-center'>
-                <span className='w-8 px-1'>{index + 1}</span>
+                  {/* line no */}
+                  <span className='w-8 px-1 border-r-2'>{index + 1}</span>
                   {/* finished checker */}
                   <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
