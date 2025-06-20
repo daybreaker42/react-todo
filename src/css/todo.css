@@ -1,0 +1,14 @@
+.error{
+    @apply border border-red-500;
+    @apply rounded;
+    /* border 두껍게 */
+    @apply border-2;
+}
+
+input, button{
+    outline: none;
+}
+
+button.delete{
+    @apply border-2 border-red-500 hover:bg-red-500 text-white py-1 px-2 rounded;
+}
