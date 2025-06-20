@@ -117,7 +117,7 @@ function App() {
    */
   const removeTodo = (index: number) => {
     setTodoList(prev => {
-      const newTodo: Todo[] = prev.filter((_, todoIndex) => index != todoIndex);
+      const newTodo: Todo[] = prev.filter((_, todoIndex) => index !== todoIndex);
       return newTodo;
     });
   }
@@ -188,7 +188,7 @@ function App() {
           {todoList.map((todo, index) => {
             return (
               <li key={todo.id} onDoubleClick={() => toggleFinished(index)}
-                className={`border-b-1:first border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
+                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
               {/* todo 내용 */}
               <div className='flex gap-2 items-center'>
                 <span className='w-8 px-1'>{index + 1}</span>
@@ -203,7 +203,7 @@ function App() {
                           editTodo(index);
                         }
                       }}
-                    className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
+                      className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
                   ) :
                     // 내용 text
                     <span className={`${todo.finished ? 'line-through text-gray-500' : ''}`}>{todo.text}</span>
