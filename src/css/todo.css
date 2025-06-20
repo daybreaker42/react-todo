@@ -1,28 +1,34 @@
+/* 초기화 */
+input, button{
+    outline: none;
+}
+/* 제목 스타일링 */
 h1{
     @apply text-2xl font-bold mt-4;
     text-align: center;
 }
-
 h2{
     @apply text-xl font-bold;
 }
-
-.error{
+/* input error난거 처리 */
+input.error{
     @apply border border-red-500;
     @apply rounded;
     /* border 두껍게 */
     @apply border-2;
 }
-
-input, button{
-    outline: none;
-}
+/* 버튼 focus상태 */
 button:focus{
     @apply outline-2 outline-blue-500 outline-offset-2;
 }
+/* 삭제 버튼 */
 button.delete{
     @apply border-2 border-red-500 hover:bg-red-500 text-white py-1 px-2 rounded;
 }
-.finished span{
+/* finished에서 내용 취소선 처리 */
+.finished .todo-text{
     @apply line-through text-gray-500;
+}
+li > div > span:not(span.todo-text):after {
+    content:" |";
 }

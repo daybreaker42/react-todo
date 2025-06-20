@@ -206,7 +206,7 @@ function App() {
                       className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
                   ) :
                     // 내용 text
-                    <span>{todo.text}</span>
+                    <span className='todo-text'>{todo.text}</span>
                   }
               </div>
 
