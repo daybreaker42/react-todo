@@ -29,25 +29,24 @@ function App() {
    */
   const addTodo = () => {
     const inputRef = addInputRef.current;
-    const text = inputRef?.value.trim();
     if (!inputRef) return;
+
+    const text = inputRef.value.trim();
     if (!text) {
-      inputRef?.focus();
-      inputRef?.classList.add('error');
+      inputRef.focus();
+      inputRef.classList.add('error');
       return;
     }
 
-    inputRef?.classList.remove('error');
+    inputRef.classList.remove('error');
     const newTodo: Todo = {
       id: Date.now(),
       text: text,
       finished: false
     }
     setTodoList(prevList => [...prevList, newTodo]);  // todolist 업데이트
-    // saveTodo();   // 로컬스토리지에 저장
     inputRef.value = '';
     inputRef.focus();
-    // console.log(todoList);
   }
 
   /**
@@ -162,7 +161,6 @@ function App() {
   // todoList가 변경될 때마다 storage에 저장하는 로직
   useEffect(() => {
     setItem(todoList);
-    // console.log(todoList);
   }, [todoList]);
 
   return (
