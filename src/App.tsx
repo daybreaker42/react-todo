@@ -116,7 +116,7 @@ function App() {
    */
   const removeTodo = (index: number) => {
     setTodoList(prev => {
-      const newTodo: Todo[] = prev.filter((todo, todoIndex) => index != todoIndex);
+      const newTodo: Todo[] = prev.filter((_, todoIndex) => index != todoIndex);
       return newTodo;
     });
   }
