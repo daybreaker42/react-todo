@@ -193,7 +193,7 @@ function App() {
               <div className='flex gap-2 items-center'>
                 <span className='w-8 px-1'>{index + 1}</span>
                   {/* finished checker */}
-                  <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)}
+                  <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
                 {isEdittingList[index] ? (
                     // 내용 input
@@ -206,7 +206,7 @@ function App() {
                       className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
                   ) :
                     // 내용 text
-                    <span className={`${todo.finished ? 'line-through text-gray-500' : ''}`}>{todo.text}</span>
+                    <span>{todo.text}</span>
                   }
               </div>
 

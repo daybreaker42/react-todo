@@ -1,5 +1,6 @@
 h1{
-    @apply text-2xl font-bold mt-4
+    @apply text-2xl font-bold mt-4;
+    text-align: center;
 }
 
 h2{
@@ -16,7 +17,12 @@ h2{
 input, button{
     outline: none;
 }
-
+button:focus{
+    @apply outline-2 outline-blue-500 outline-offset-2;
+}
 button.delete{
     @apply border-2 border-red-500 hover:bg-red-500 text-white py-1 px-2 rounded;
+}
+.finished span{
+    @apply line-through text-gray-500;
 }
