@@ -126,9 +126,15 @@ function App() {
    * clearTodo - 할 일 전체 삭제 함수
    */
   const clearTodo = () => {
-    setTodoList([]);
+    const confirmResult = confirm('할 일을 모두 지우시겠습니까?');
+    if (confirmResult) {
+      setTodoList([]);
+    }
   }
 
+  /**
+   * 해당 todo의 finished를 toggle하는 함수
+   */
   const toggleFinished = (index: number) => {
     setTodoList(prev => {
       const newList = prev.map((todo, todoIndex) => {
@@ -164,8 +170,8 @@ function App() {
       {/* wrapper div */}
       <div className="container mx-auto max-w-3xl">
         {/* 제목 부분 */}
-        <h1 className='text-2xl font-bold mt-4'>To-do List</h1>
-        {/* <h2 className='text-xl font-bold mt-4'>할 일 추가</h2> */}
+        <h1>To-do List</h1>
+        {/* <h2>할 일 추가</h2> */}
         {/* 할 일 추가 부분 */}
         <div className='mt-8 flex justify-between items-center gap-4'>
           <input type="text" placeholder='할 일을 입력하세요' ref={addInputRef} onKeyDown={addKeyHandler}
@@ -173,10 +179,9 @@ function App() {
           <button onClick={addTodo} ref={addButtonRef} className='w-36 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'>추가하기</button>
         </div>
 
-
         {/* 할 일 목록 */}
         <div className='flex justify-between items-center mt-8'>
-          <h2 className='text-xl font-bold'>할 일 목록</h2>
+          <h2>할 일 목록</h2>
           <button onClick={clearTodo} className='delete'>전체 삭제</button>
         </div>
         <ul id="content" className='mt-2 p-4'>

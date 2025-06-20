@@ -1,3 +1,11 @@
+h1{
+    @apply text-2xl font-bold mt-4
+}
+
+h2{
+    @apply text-xl font-bold;
+}
+
 .error{
     @apply border border-red-500;
     @apply rounded;
