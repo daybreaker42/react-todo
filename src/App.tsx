@@ -183,18 +183,18 @@ function App() {
           <button onClick={clearTodo} className='delete'>전체 삭제</button>
         </div>
         <ul id="content" className='mt-2 p-4'>
-          {todoList.map((todo, index) => {
+          {todoList.filter(todo => !todo.finished).map((todo, index) => {
             return (
               <li key={todo.id} onDoubleClick={() => toggleFinished(index)}
                 className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
-              {/* todo 내용 */}
-              <div className='flex gap-2 items-center'>
+                {/* todo 내용 */}
+                <div className='flex gap-2 items-center'>
                   {/* line no */}
                   <span className='w-8 px-1 border-r-2'>{index + 1}</span>
                   {/* finished checker */}
                   <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
-                {isEdittingList[index] ? (
+                  {isEdittingList[index] ? (
                     // 내용 input
                     <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
                       onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -207,19 +207,64 @@ function App() {
                     // 내용 text
                     <span className='todo-text'>{todo.text}</span>
                   }
-              </div>
+                </div>
 
-              {/* todo 수정/삭제 버튼 */}
-              <div className='flex gap-4'>
-                <button onClick={() => editTodo(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                  {!isEdittingList[index] ? '수정' : '수정 완료'}
-                </button>
-                <button onClick={() => removeTodo(index)} className='delete'>삭제</button>
-              </div>
-            </li>
+                {/* todo 수정/삭제 버튼 */}
+                <div className='flex gap-4'>
+                  <button onClick={() => editTodo(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+                    {!isEdittingList[index] ? '수정' : '수정 완료'}
+                  </button>
+                  <button onClick={() => removeTodo(index)} className='delete'>삭제</button>
+                </div>
+              </li>
             );
           })}
         </ul>
+
+        {/* 완료된 할 일 보기 */}
+        <div className='flex justify-between items-center mt-8'>
+          <h2>완료된 할 일 목록</h2>
+          {/* <button onClick={clearTodo} className='delete'>전체 삭제</button> */}
+        </div>
+        <ul id="content" className='mt-2 p-4'>
+          {todoList.filter(todo => todo.finished).map((todo, index) => {
+            return (
+              <li key={todo.id} onDoubleClick={() => toggleFinished(index)}
+                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
+                {/* todo 내용 */}
+                <div className='flex gap-2 items-center'>
+                  {/* line no */}
+                  <span className='w-8 px-1 border-r-2'>{index + 1}</span>
+                  {/* finished checker */}
+                  <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
+                    className='w-5 h-5 accent-blue-500' />
+                  {isEdittingList[index] ? (
+                    // 내용 input
+                    <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
+                      onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (event.key === 'Enter') {
+                          editTodo(index);
+                        }
+                      }}
+                      className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
+                  ) :
+                    // 내용 text
+                    <span className='todo-text'>{todo.text}</span>
+                  }
+                </div>
+
+                {/* todo 수정/삭제 버튼 */}
+                <div className='flex gap-4'>
+                  {/* <button onClick={() => editTodo(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+                  {!isEdittingList[index] ? '수정' : '수정 완료'}
+                </button> */}
+                  <button onClick={() => removeTodo(index)} className='delete'>삭제</button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
       </div>
     </>
   )
