@@ -161,7 +161,7 @@ function App() {
   return (
     <>
       {/* wrapper div */}
-      <div className="container mx-auto max-w-3xl">
+      <div className="container mx-auto max-w-3xl px-2">
         {/* 제목 부분 */}
         <h1>To-do List</h1>
         {/* <h2>할 일 추가</h2> */}
