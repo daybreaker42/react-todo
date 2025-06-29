@@ -4,16 +4,10 @@ import { getItem, setItem } from '@/utils/storage';
 
 function App() {
   const addInputRef = useRef<HTMLInputElement>(null);
-  // const editButtonRef = useRef<HTMLButtonElement>(null);
-  // const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
   // todo 정보 저장하는 리스트
   const [todoList, setTodoList] = useState<Todo[]>(() => {
     return getItem();
-  });
-  // 해당 todo 수정중인지 여부 리스트
-  const [isEdittingList, setIsEdittingList] = useState<boolean[]>(() => {
-    return todoList.map(() => false);
   });
   // todo input ref list
   const todoInputRefList = useRef<Array<HTMLInputElement | null>>([]);
@@ -52,39 +46,42 @@ function App() {
   /**
    * editTodo - 할 일 수정 함수
    */
-  const editTodo = (index: number) => {
+  const editTodo = (id: number) => {
+    todoList.forEach((todo) => {
+      if (todo.id === id) {
+        if (todo.isEditting) {
+  // 할 일 수정중이었다면 -> 수정 완료
+          const currentInput = getCurrentInput(id);
+          if (!currentInput) return;
 
-    if (isEdittingList[index]) {
-      // 할 일 수정중이었다면 -> 수정 완료
-      const currentInput = getCurrentInput(index);
-      if (!currentInput) return;
+          // 해당 input 안의 value
+          const newValue: string = currentInput.value;
+          if (!newValue) {
+            // 칸이 비어있다면 error상태로 바꿈
+            console.error(`editTodo() - no value in currentInput: `, newValue);
+            currentInput.classList.add('error');
+            return;
+          }
 
-      // 해당 input 안의 value
-      const newValue: string = currentInput.value;
-      if (!newValue) {
-        // 칸이 비어있다면 error상태로 바꿈
-        console.error(`editTodo() - no value in currentInput: `, newValue);
-        currentInput.classList.add('error');
-        return;
+          toggleEditList(id);
+          // 문제없다면 todoList 갱신
+          setTodoList(prevList => {
+            const newList = [...prevList];
+            newList[id].text = newValue;
+            return newList;
+          })
+        } else {
+          // 할 일 수정 시작
+          // 먼저 editlist를 toggle해야 currentInput이 생겨서 toggle먼저 하고 나머지 처리
+          toggleEditList(id);
+          setTimeout(() => {
+            const currentInput = getCurrentInput(id);
+            if (!currentInput) return;
+            currentInput.focus();
+          }, 0);
+        }
       }
-
-      toggleEditList(index);
-      // 문제없다면 todoList 갱신
-      setTodoList(prevList => {
-        const newList = [...prevList];
-        newList[index].text = newValue;
-        return newList;
-      })
-    } else {
-      // 할 일 수정 시작
-      // 먼저 editlist를 toggle해야 currentInput이 생겨서 toggle먼저 하고 나머지 처리
-      toggleEditList(index);
-      setTimeout(() => {
-        const currentInput = getCurrentInput(index);
-        if (!currentInput) return;
-        currentInput.focus();
-      }, 0);
-    }
+    });
   }
 
   /**
@@ -102,21 +99,19 @@ function App() {
   /**
    * isEdittingList에서 주어진 index toggle
    */
-  const toggleEditList = (index: number) => {
-    setIsEdittingList(prev => {
-      const newList = [...prev];
-      newList[index] = !newList[index];  // 현재 todo의 수정 상태를 토글
+  const toggleEditList = (id: number) => {
+    setTodoList(todos => {
+      const newList = todos.filter(todo => todo.id !== id);
       return newList;
     });
-
   }
 
   /**
    * removeTodo - 할 일 삭제 함수
    */
-  const removeTodo = (index: number) => {
+  const removeTodo = (id: number) => {
     setTodoList(prev => {
-      const newTodo: Todo[] = prev.filter((_, todoIndex) => index !== todoIndex);
+      const newTodo: Todo[] = prev.filter(todo => todo.id !== id);
       return newTodo;
     });
   }
@@ -194,12 +189,12 @@ function App() {
                   {/* finished checker */}
                   <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
-                  {isEdittingList[index] ? (
+                  {todo.isEditting ? (
                     // 내용 input
                     <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
                       onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
                         if (event.key === 'Enter') {
-                          editTodo(index);
+                          editTodo(todo.id);
                         }
                       }}
                       className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
@@ -211,10 +206,10 @@ function App() {
 
                 {/* todo 수정/삭제 버튼 */}
                 <div className='flex gap-4'>
-                  <button onClick={() => editTodo(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                    {!isEdittingList[index] ? '수정' : '수정 완료'}
+                  <button onClick={() => editTodo(todo.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+                    {!todo.isEditting ? '수정' : '수정 완료'}
                   </button>
-                  <button onClick={() => removeTodo(index)} className='delete'>삭제</button>
+                  <button onClick={() => removeTodo(todo.id)} className='delete'>삭제</button>
                 </div>
               </li>
             );
@@ -238,12 +233,12 @@ function App() {
                   {/* finished checker */}
                   <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
-                  {isEdittingList[index] ? (
+                  {todo.isEditting ? (
                     // 내용 input
                     <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
                       onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
                         if (event.key === 'Enter') {
-                          editTodo(index);
+                          editTodo(todo.id);
                         }
                       }}
                       className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
@@ -256,9 +251,9 @@ function App() {
                 {/* todo 수정/삭제 버튼 */}
                 <div className='flex gap-4'>
                   {/* <button onClick={() => editTodo(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                  {!isEdittingList[index] ? '수정' : '수정 완료'}
+                  {!todo.isEditting ? '수정' : '수정 완료'}
                 </button> */}
-                  <button onClick={() => removeTodo(index)} className='delete'>삭제</button>
+                  <button onClick={() => removeTodo(todo.id)} className='delete'>삭제</button>
                 </div>
               </li>
             );
