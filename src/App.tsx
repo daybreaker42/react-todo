@@ -1,27 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Todo } from './types/todo';
+import type { Task } from './types/task';
 import { getItem, setItem } from '@/utils/storage';
 
 function App() {
   const addInputRef = useRef<HTMLInputElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
-  // todo 정보 저장하는 리스트
-  const [todoList, setTodoList] = useState<Todo[]>(() => {
+  // task 정보 저장하는 리스트
+  const [taskList, setTaskList] = useState<Task[]>(() => {
     return getItem();
   });
-  // todo input ref list
-  const todoInputRefList = useRef<Array<HTMLInputElement | null>>([]);
-  // const todoRefList = useRef
+  // task input ref list
+  // {task id, ref 저장}
+  const taskInputRefList = useRef<Map<number, HTMLInputElement | null>>(new Map());
 
   /**
    * 할 일 추가 함수
-   * - 입력 필드에서 텍스트를 가져와서 trim 후, 새로운 Todo 객체를 생성하고 todoList 상태에 추가
+   * - 입력 필드에서 텍스트를 가져와서 trim 후, 새로운 Task 객체를 생성하고 taskList 상태에 추가
    * - 빈 문자열인 경우 에러 처리
    * @returns void
    * @example
-   * addTodo(); // 사용자가 입력한 할 일을 todoList에 추가
+   * addTask(); // 사용자가 입력한 할 일을 taskList에 추가
    */
-  const addTodo = () => {
+  const addTask = () => {
     const inputRef = addInputRef.current;
     if (!inputRef) return;
 
@@ -33,23 +33,23 @@ function App() {
     }
 
     inputRef.classList.remove('error');
-    const newTodo: Todo = {
+    const newTask: Task = {
       id: Date.now(),
       text: text,
       finished: false
     }
-    setTodoList(prevList => [...prevList, newTodo]);  // todolist 업데이트
+    setTaskList(prevList => [...prevList, newTask]);  // tasklist 업데이트
     inputRef.value = '';
     inputRef.focus();
   }
 
   /**
-   * editTodo - 할 일 수정 함수
+   * editTask - 할 일 수정 함수
    */
-  const editTodo = (id: number) => {
-    todoList.forEach((todo) => {
-      if (todo.id === id) {
-        if (todo.isEditting) {
+  const editTask = (id: number) => {
+    taskList.forEach((task) => {
+      if (task.id === id) {
+        if (task.isEditting) {
   // 할 일 수정중이었다면 -> 수정 완료
           const currentInput = getCurrentInput(id);
           if (!currentInput) return;
@@ -58,14 +58,14 @@ function App() {
           const newValue: string = currentInput.value;
           if (!newValue) {
             // 칸이 비어있다면 error상태로 바꿈
-            console.error(`editTodo() - no value in currentInput: `, newValue);
+            console.error(`editTask() - no value in currentInput: `, newValue);
             currentInput.classList.add('error');
             return;
           }
 
           toggleEditList(id);
-          // 문제없다면 todoList 갱신
-          setTodoList(prevList => {
+          // 문제없다면 taskList 갱신
+          setTaskList(prevList => {
             const newList = [...prevList];
             newList[id].text = newValue;
             return newList;
@@ -85,13 +85,13 @@ function App() {
   }
 
   /**
-   * todoInputRefList에서 index에 해당하는 ref가 있으면 return, 없으면 error출력 후 null 반환
+   * taskInputRefList에서 index에 해당하는 ref가 있으면 return, 없으면 error출력 후 null 반환
    */
   const getCurrentInput = (index: number): HTMLInputElement | null => {
-    const currentInput = todoInputRefList.current[index];
+    const currentInput = taskInputRefList.current.get(index);
     if (!currentInput) {
       // 없으면 error 출력 후 return
-      console.error(`editTodo() - no currentInput`);
+      console.error(`editTask() - no currentInput`);
       return null;
     }
     return currentInput;
@@ -100,45 +100,45 @@ function App() {
    * isEdittingList에서 주어진 index toggle
    */
   const toggleEditList = (id: number) => {
-    setTodoList(todos => {
-      const newList = todos.filter(todo => todo.id !== id);
+    setTaskList(tasks => {
+      const newList = tasks.filter(task => task.id !== id);
       return newList;
     });
   }
 
   /**
-   * removeTodo - 할 일 삭제 함수
+   * removeTask - 할 일 삭제 함수
    */
-  const removeTodo = (id: number) => {
-    setTodoList(prev => {
-      const newTodo: Todo[] = prev.filter(todo => todo.id !== id);
-      return newTodo;
+  const removeTask = (id: number) => {
+    setTaskList(prev => {
+      const newTask: Task[] = prev.filter(task => task.id !== id);
+      return newTask;
     });
   }
 
   /**
-   * clearTodo - 할 일 전체 삭제 함수
+   * clearTask - 할 일 전체 삭제 함수
    */
-  const clearTodo = () => {
+  const clearTask = () => {
     const confirmResult = confirm('할 일을 모두 지우시겠습니까?');
     if (confirmResult) {
-      setTodoList([]);
+      setTaskList([]);
     }
   }
 
   /**
-   * 해당 todo의 finished를 toggle하는 함수
+   * 해당 task의 finished를 toggle하는 함수
    */
   const toggleFinished = (index: number) => {
-    setTodoList(prev => {
-      const newList = prev.map((todo, todoIndex) => {
-        if (index == todoIndex) {
+    setTaskList(prev => {
+      const newList = prev.map((task, taskIndex) => {
+        if (index == taskIndex) {
           return {
-            ...todo,
-            finished: !todo.finished
+            ...task,
+            finished: !task.finished
           };
         } else {
-          return todo;
+          return task;
         }
       });
       return newList;
@@ -146,17 +146,17 @@ function App() {
   }
 
   // 키보드 이벤트 핸들러
-  // - Enter 키를 누르면 addTodo 함수 호출
+  // - Enter 키를 누르면 addTask 함수 호출
   const addKeyHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      addTodo();
+      addTask();
     }
   }
 
-  // todoList가 변경될 때마다 storage에 저장하는 로직
+  // taskList가 변경될 때마다 storage에 저장하는 로직
   useEffect(() => {
-    setItem(todoList);
-  }, [todoList]);
+    setItem(taskList);
+  }, [taskList]);
 
   return (
     <>
@@ -169,47 +169,47 @@ function App() {
         <div className='mt-8 flex justify-between items-center gap-4'>
           <input type="text" placeholder='할 일을 입력하세요' ref={addInputRef} onKeyDown={addKeyHandler}
             className='h-10 w-full border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2' />
-          <button onClick={addTodo} ref={addButtonRef} className='w-36 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'>추가하기</button>
+          <button onClick={addTask} ref={addButtonRef} className='w-36 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'>추가하기</button>
         </div>
 
         {/* 할 일 목록 */}
         <div className='flex justify-between items-center mt-8'>
           <h2>할 일 목록</h2>
-          <button onClick={clearTodo} className='delete'>전체 삭제</button>
+          <button onClick={clearTask} className='delete'>전체 삭제</button>
         </div>
         <ul id="content" className='mt-2 p-4'>
-          {todoList.filter(todo => !todo.finished).map((todo, index) => {
+          {taskList.filter(task => !task.finished).map((task, index) => {
             return (
-              <li key={todo.id} onDoubleClick={() => toggleFinished(index)}
-                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
-                {/* todo 내용 */}
+              <li key={task.id} onDoubleClick={() => toggleFinished(index)}
+                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${task.finished ? 'finished' : ''}`}>
+                {/* task 내용 */}
                 <div className='flex gap-2 items-center'>
                   {/* line no */}
                   <span className='w-8 px-1 border-r-2'>{index + 1}</span>
                   {/* finished checker */}
-                  <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
+                  <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
-                  {todo.isEditting ? (
+                  {task.isEditting ? (
                     // 내용 input
-                    <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
+                    <input type='text' defaultValue={task.text} id={`task-input-${index}`} ref={(el) => { (taskInputRefList.current.set(index, el)) }}
                       onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
                         if (event.key === 'Enter') {
-                          editTodo(todo.id);
+                          editTask(task.id);
                         }
                       }}
                       className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
                   ) :
                     // 내용 text
-                    <span className='todo-text'>{todo.text}</span>
+                    <span className='task-text'>{task.text}</span>
                   }
                 </div>
 
-                {/* todo 수정/삭제 버튼 */}
+                {/* task 수정/삭제 버튼 */}
                 <div className='flex gap-4'>
-                  <button onClick={() => editTodo(todo.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                    {!todo.isEditting ? '수정' : '수정 완료'}
+                  <button onClick={() => editTask(task.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+                    {!task.isEditting ? '수정' : '수정 완료'}
                   </button>
-                  <button onClick={() => removeTodo(todo.id)} className='delete'>삭제</button>
+                  <button onClick={() => removeTask(task.id)} className='delete'>삭제</button>
                 </div>
               </li>
             );
@@ -219,41 +219,41 @@ function App() {
         {/* 완료된 할 일 보기 */}
         <div className='flex justify-between items-center mt-8'>
           <h2>완료된 할 일 목록</h2>
-          {/* <button onClick={clearTodo} className='delete'>전체 삭제</button> */}
+          {/* <button onClick={clearTask} className='delete'>전체 삭제</button> */}
         </div>
         <ul id="content" className='mt-2 p-4'>
-          {todoList.filter(todo => todo.finished).map((todo, index) => {
+          {taskList.filter(task => task.finished).map((task, index) => {
             return (
-              <li key={todo.id} onDoubleClick={() => toggleFinished(index)}
-                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${todo.finished ? 'finished' : ''}`}>
-                {/* todo 내용 */}
+              <li key={task.id} onDoubleClick={() => toggleFinished(index)}
+                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${task.finished ? 'finished' : ''}`}>
+                {/* task 내용 */}
                 <div className='flex gap-2 items-center'>
                   {/* line no */}
                   <span className='w-8 px-1 border-r-2'>{index + 1}</span>
                   {/* finished checker */}
-                  <input type="checkbox" checked={todo.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
+                  <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
                     className='w-5 h-5 accent-blue-500' />
-                  {todo.isEditting ? (
+                  {task.isEditting ? (
                     // 내용 input
-                    <input type='text' defaultValue={todo.text} id={`todo-input-${index}`} ref={(el) => { (todoInputRefList.current[index] = el) }}
+                    <input type='text' defaultValue={task.text} id={`task-input-${index}`} ref={(el) => { (taskInputRefList.current.set(index, el)) }}
                       onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
                         if (event.key === 'Enter') {
-                          editTodo(todo.id);
+                          editTask(task.id);
                         }
                       }}
                       className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
                   ) :
                     // 내용 text
-                    <span className='todo-text'>{todo.text}</span>
+                    <span className='task-text'>{task.text}</span>
                   }
                 </div>
 
-                {/* todo 수정/삭제 버튼 */}
+                {/* task 수정/삭제 버튼 */}
                 <div className='flex gap-4'>
-                  {/* <button onClick={() => editTodo(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                  {!todo.isEditting ? '수정' : '수정 완료'}
+                  {/* <button onClick={() => editTask(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+                  {!task.isEditting ? '수정' : '수정 완료'}
                 </button> */}
-                  <button onClick={() => removeTodo(todo.id)} className='delete'>삭제</button>
+                  <button onClick={() => removeTask(task.id)} className='delete'>삭제</button>
                 </div>
               </li>
             );
