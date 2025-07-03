@@ -1,2 +1,12 @@
 @import "tailwindcss";
-@import '@/css/todo.css'
+@import '@/css/todo.css'; 
+
+:root{
+  --primary-color: #1381FE;
+  --dark-gray: #292929;
+  --bg-black: #000;
+}
+
+body{
+   @apply bg-black text-white;
+}
