@@ -5,8 +5,20 @@
 export type Task = {
   id: number;
   text: string;
+  detail?: string;
   finished: boolean;
-  isEditting?: boolean; // 기본값 = false
+  isEditting: boolean; // 기본값 = false
+  ref: React.RefObject<HTMLInputElement | null> | null; // input ref 저장용
+  date?: string; // 날짜 추가를 위한 필드
+  tag?: Tag;
+  subtask?: Array<SubTask>;
+}
+
+export type TaskWithoutEditting = {
+  id: number;
+  text: string;
+  detail?: string;
+  finished: boolean;
   date?: string; // 날짜 추가를 위한 필드
   tag?: Tag;
   subtask?: Array<SubTask>;
