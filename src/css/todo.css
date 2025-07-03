@@ -4,11 +4,6 @@
 input, button{
     outline: none;
 }
-/* 제목 스타일링 */
-h1{
-    @apply text-2xl font-bold mt-4;
-    text-align: center;
-}
 h2{
     @apply text-xl font-bold;
 }

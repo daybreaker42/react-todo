@@ -119,16 +119,16 @@ function App() {
   return (
     <>
       {/* wrapper div */}
-      <div className="container mx-auto max-w-3xl px-2">
+      <div className="container mx-auto max-w-3xl p-2">
         {/* title image */}
         <img src='./icon.webp' className='w-25 mx-auto' />
         {/* 제목 부분 */}
-        <h1>To-do List</h1>
+        <h1 className='text-2xl font-bold text-center'>To-do List</h1>
         {/* <h2>할 일 추가</h2> */}
         {/* 할 일 추가 부분 */}
         <div className='mt-8 flex justify-between items-center gap-4'>
           <input type="text" placeholder='할 일을 입력하세요' ref={addInputRef} onKeyDown={addKeyHandler}
-            className='h-10 w-full border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2' />
+            className='h-10 w-full border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2 rounded' />
           <button onClick={addTask} ref={addButtonRef} className='w-36 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'>추가하기</button>
         </div>
 
@@ -210,7 +210,7 @@ function App() {
 
                 {/* task 수정/삭제 버튼 */}
                 <div className='flex gap-4'>
-                  <button onClick={() => editTask(index)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+                  <button onClick={() => editTask(task.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
                   {!task.isEditting ? '수정' : '수정 완료'}
                   </button>
                   <button onClick={() => removeTask(task.id)} className='delete'>삭제</button>
