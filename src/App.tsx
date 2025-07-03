@@ -47,7 +47,7 @@ function App() {
   }
 
   /**
-   * editTask - 할 일 수정 함수
+   * MARK: editTask - 할 일 수정 함수
    */
   const editTask = (id: number) => {
     setTaskList(prevList =>
@@ -115,10 +115,13 @@ function App() {
     setItem(taskList);
   }, [taskList]);
 
+  // MARK: 앱 시작
   return (
     <>
       {/* wrapper div */}
       <div className="container mx-auto max-w-3xl px-2">
+        {/* title image */}
+        <img src='./icon.webp' className='w-25 mx-auto' />
         {/* 제목 부분 */}
         <h1>To-do List</h1>
         {/* <h2>할 일 추가</h2> */}
