@@ -274,13 +274,6 @@ function App() {
         </ul>
 
       </div>
-      <button onClick={() => {
-        if (modalRef.current?.open) {
-          closeModal();
-        } else {
-          openModal();
-        }
-      }}>모달 토글</button>
     </>
   )
 }
