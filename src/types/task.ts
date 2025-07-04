@@ -22,6 +22,13 @@ export type Task = TaskWithEssentials & {
   ref: React.RefObject<HTMLInputElement | null> | null; // input ref 저장용
 }
 
+export type Modal = {
+  taskId: number;
+  text: string;
+  detail: string;
+  date: string;
+}
+
 /**
  * type: SubTask
  * - type 하위 할 일들을 저장

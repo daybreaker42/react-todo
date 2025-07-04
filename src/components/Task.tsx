@@ -43,6 +43,9 @@ export default function Task({ task, index, toggleFinished, editTask, removeTask
 
       {/* task 수정/삭제 버튼 */}
       <div className='flex gap-4'>
+        {/* <button onClick={() => editTask(task.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
+          수정
+        </button> */}
         <button onClick={() => editTask(task.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
           {!task.isEditting ? '수정' : '수정 완료'}
         </button>

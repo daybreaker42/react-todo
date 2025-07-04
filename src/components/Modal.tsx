@@ -1,19 +1,15 @@
 import { useRef, useState } from "react";
-import type { Task } from "@/types/task";
+import type { Modal } from "@/types/task";
 
 interface ModalProps{
-  modalRef:React.RefObject<HTMLDialogElement | null>;
+  content: Modal;
   closeModal: () => void;
-  taskList: Task[];
-  setTaskList: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-export default function Modal({modalRef, closeModal, taskList, setTaskList} : ModalProps){
-  const currentTask = taskList.filter(task => task.isEditting)[0];
-  // if(!currentTask) return;
-  const [textVal, setTextVal] = useState(currentTask?.text);
-  const [detailVal, setDetailVal] = useState(currentTask?.detail ?? '');
-  const [dateValue, setDateValue] = useState(currentTask?.date ?? '');
+export default function Modal({ content, closeModal }: ModalProps) {
+  const [textVal, setTextVal] = useState(content.text);
+  const [detailVal, setDetailVal] = useState(content.detail ?? '');
+  const [dateValue, setDateValue] = useState(content.date ?? '');
 
 
   const textRef = useRef<HTMLInputElement>(null);
@@ -22,7 +18,7 @@ export default function Modal({modalRef, closeModal, taskList, setTaskList} : Mo
 
   return (
     <>
-    <dialog ref={modalRef} className='mx-auto my-auto w-100 h-100 rounded bg-gray-900 outline-3 outline-[var(--primary-color)] text-white text-center p-4'>
+
         <header className='flex justify-between'>
           <h2>할 일 수정</h2>
           {/* 그냥 닫는 버튼 */}
@@ -33,13 +29,13 @@ export default function Modal({modalRef, closeModal, taskList, setTaskList} : Mo
           <li>
             <label className='my-4 flex flex-col items-start gap-2'>
               <h3>할 일 내용</h3>
-              <input ref={textRef} className='outline-3 outline-white rounded focus:outline-blue-500 w-full ml-2' value={textVal} />
+            <input ref={textRef} className='outline-3 outline-white rounded focus:outline-blue-500 w-full ml-2' value={textVal} onChange={e => setTextVal(e.target.value)} />
             </label>
           </li>
           <li>
             <label className='my-4 flex flex-col items-start gap-2'>
               <h3>상세 내용</h3>
-              <input ref={detailRef} className='outline-3 outline-white rounded focus:outline-blue-500 w-full ml-2' value={detailVal} />
+            <input ref={detailRef} className='outline-3 outline-white rounded focus:outline-blue-500 w-full ml-2' value={detailVal} onChange={e => setDetailVal(e.target.value)} />
             </label>
           </li>
           <li>
@@ -55,8 +51,7 @@ export default function Modal({modalRef, closeModal, taskList, setTaskList} : Mo
           </li>
         </ul>
         {/* 저장하고 닫는 버튼 */}
-        <button onClick={() => closeModal()} className='bg-[var(--primary-color)] rounded px-4 py-2 hover:bg-blue-700'>저장하고 닫기</button>
-      </dialog>
+      <button onClick={() => closeModal(content)} className='bg-[var(--primary-color)] rounded px-4 py-2 hover:bg-blue-700'>저장하고 닫기</button>
     </>
   );
 }

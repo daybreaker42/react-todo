@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, createRef } from 'react';
-import type { Task } from '@/types/task';
+import type { Task, Modal } from '@/types/task';
 import { getItem, setItem } from '@/utils/storage';
-import Modal from '@/components/Modal';
+import ModalC from '@/components/Modal';
 import TaskC from '@/components/Task';
 
 // svg icons
@@ -19,6 +19,9 @@ function App() {
   // task input ref list
   // {task id, ref 저장}
   // const taskInputRefList = useRef<Map<number, HTMLInputElement | null>>(new Map());
+
+  // modal 정보 설정
+  const [modalContent, setModalContent] = useState<Modal>({ taskId: 1, text: '', detail: '', date: '' });
 
   /**
    * 할 일 추가 함수
@@ -57,10 +60,22 @@ function App() {
    * MARK: editTask - 할 일 수정 함수
    */
   const editTask = (id: number) => {
+    const currTask = taskList.find(task => task.id === id);
+    if (!currTask) return;
+    setModalContent({
+      taskId: currTask.id,
+      text: currTask.text,
+      detail: currTask.detail ?? '',
+      date: currTask.date ?? ''
+    });
     toggleTaskEdit(id);
     openModal();
   }
 
+  /**
+   * toggleTaskEdit
+   * - 해당 id의 task의 isEditting을 toggle
+   */
   const toggleTaskEdit = (id: number) => {
     setTaskList(prevList =>
       prevList.map(task => {
@@ -124,7 +139,19 @@ function App() {
   /**
    * modal close
    */
-  const closeModal = () => {
+  const closeModal = (content?: Modal) => {
+    if (content) {
+      setTaskList(prev => prev.map(task =>
+        task.id !== content.taskId
+          ? task :
+          {
+            ...task,
+            text: content.text,
+            detail: content.detail,
+            date: content.date
+          }
+      ));
+    }
     modalRef.current?.close();
   }
 
@@ -144,7 +171,9 @@ function App() {
   // MARK: 앱 시작
   return (
     <>
-      <Modal modalRef={modalRef} closeModal={closeModal} taskList={taskList} setTaskList={setTaskList} />
+      <dialog ref={modalRef} className='mx-auto my-auto w-100 h-100 rounded bg-gray-900 outline-3 outline-[var(--primary-color)] text-white text-center p-4'>
+        <ModalC content={modalContent} closeModal={closeModal} />
+      </dialog>
       {/* wrapper div */}
       <div className="container mx-auto max-w-3xl p-2">
         {/* title image */}
