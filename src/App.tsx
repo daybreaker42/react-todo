@@ -247,9 +247,7 @@ function App() {
         <ul id="ongoing-content" className='mt-2 p-4'>
           {taskList.filter(task => !task.finished).map((task, index) => {
             return (
-              <li key={task.id} onDoubleClick={() => toggleFinished(task.id)}
-                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center`}>
-                {/* task 내용 */}
+              <li key={task.id} className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center`}>
                 <TaskC index={index} task={task} toggleFinished={toggleFinished} editTask={editTask} removeTask={removeTask} />
               </li>
             );
@@ -264,9 +262,7 @@ function App() {
         <ul id="finished-content" className='mt-2 p-4'>
           {taskList.filter(task => task.finished).map((task, index) => {
             return (
-              <li key={task.id} onDoubleClick={() => toggleFinished(task.id)}
-                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center finished`}>
-                {/* task 내용 */}
+              <li key={task.id} className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center finished`}>
                 <TaskC index={index} task={task} toggleFinished={toggleFinished} editTask={editTask} removeTask={removeTask} />
               </li>
             );
