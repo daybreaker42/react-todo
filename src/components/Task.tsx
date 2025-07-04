@@ -1,4 +1,6 @@
 import type { Task } from "@/types/task";
+import Unfinished from '@/assets/icons/unfinished.svg?react'; // SVG를 기본 모듈로 가져오기
+
 
 interface TaskProps{
   task: Task;
@@ -15,6 +17,7 @@ export default function Task({ task, index, toggleFinished, editTask, removeTask
         {/* line no */}
         <span className='w-8 px-1 border-r-2'>{index + 1}</span>
         {/* finished checker */}
+        <Unfinished width={30} height={30} />
         <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(task.id)} tabIndex={-1}
           className='w-5 h-5 accent-blue-500' />
         {/* {task.isEditting ? (
