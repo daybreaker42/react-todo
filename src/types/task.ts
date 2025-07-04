@@ -1,20 +1,7 @@
 /**
- * Task type
- * - 할 일을 기록하는 type
+ * TaskWithEssentials type
+ * - localstorage 저장 시 사용되는 type
  */
-export type Task = {
-  id: number;
-  text: string;
-  detail?: string;
-  finished: boolean;
-  date?: string; // 날짜 추가를 위한 필드
-  tag?: Tag;
-  subtask?: Array<SubTask>;
-  // 저장되지는 않는데 기능을 위해 필요한 필드
-  isEditting: boolean; // 기본값 = false
-  ref: React.RefObject<HTMLInputElement | null> | null; // input ref 저장용
-}
-
 export type TaskWithEssentials = {
   id: number;
   text: string;
@@ -23,6 +10,16 @@ export type TaskWithEssentials = {
   date?: string; // 날짜 추가를 위한 필드
   tag?: Tag;
   subtask?: Array<SubTask>;
+}
+
+/**
+ * Task type
+ * - 할 일을 기록하는 type
+ */
+export type Task = TaskWithEssentials & {
+  // 저장되지는 않는데 기능을 위해 필요한 필드
+  isEditting: boolean; // 기본값 = false
+  ref: React.RefObject<HTMLInputElement | null> | null; // input ref 저장용
 }
 
 /**
