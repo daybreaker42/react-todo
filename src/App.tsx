@@ -21,7 +21,31 @@ function App() {
   // const taskInputRefList = useRef<Map<number, HTMLInputElement | null>>(new Map());
 
   // modal 정보 설정
-  const [modalContent, setModalContent] = useState<Modal>({ taskId: 1, text: '', detail: '', date: '' });
+  const [modalContent, setModalContent] = useState<Modal>({ taskId: -1, text: '', detail: '', date: '' });
+
+  // taskList에서 edit등으로 상태 바뀐게 있으면 modal에 해당 값 넣기
+  useEffect(() => {
+    const currTask = taskList.find(task => task.isEditting);
+    if (currTask) {
+      // 수정중인 task가 있을 때
+      setModalContent({
+        taskId: currTask.id,
+        text: currTask.text,
+        detail: currTask.detail ?? '',
+        date: currTask.date ?? ''
+      });
+    }
+  }, [taskList]);
+
+  // 위에서 modalcontent가 변경되었을 때 - 수정중이면 openModal 실행
+  useEffect(() => {
+    if (modalContent.taskId !== -1) {
+      // console.log(`currTask - ${JSON.stringify(currTask)}`);
+      console.log(`modalContent - ${JSON.stringify(modalContent)}`);
+
+      openModal();
+    }
+  }, [modalContent]);
 
   /**
    * 할 일 추가 함수
@@ -60,16 +84,26 @@ function App() {
    * MARK: editTask - 할 일 수정 함수
    */
   const editTask = (id: number) => {
-    const currTask = taskList.find(task => task.id === id);
-    if (!currTask) return;
-    setModalContent({
-      taskId: currTask.id,
-      text: currTask.text,
-      detail: currTask.detail ?? '',
-      date: currTask.date ?? ''
-    });
     toggleTaskEdit(id);
-    openModal();
+
+    // const currTask = taskList.find(task => task.id === id);
+    // if (!currTask) {
+    //   console.error(`error - editTask() | no task found by ${id}`);
+    //   return;
+    // }
+    // setModalContent({
+    //   taskId: currTask.id,
+    //   text: currTask.text,
+    //   detail: currTask.detail ?? '',
+    //   date: currTask.date ?? ''
+    // });
+    // // toggleTaskEdit(id); // 해당 task 수정중으로 변경
+    // setTimeout(() => {
+    // //   console.log(`currTask - ${JSON.stringify(currTask)}`);
+    // //   console.log(`modalContent - ${JSON.stringify(modalContent)}`);
+    //   toggleTaskEdit(id);
+    //   //   openModal();
+    // }, 0);
   }
 
   /**
@@ -148,10 +182,27 @@ function App() {
             ...task,
             text: content.text,
             detail: content.detail,
-            date: content.date
+            date: content.date,
+            isEditting: false,
+          }
+      ));
+    } else {
+      setTaskList(prev => prev.map(task =>
+        task.id !== modalContent.taskId
+          ? task :
+          {
+            ...task,
+            isEditting: false,
           }
       ));
     }
+
+    setModalContent({
+      taskId: -1,
+      text: '',
+      detail: '',
+      date: ''
+    });
     modalRef.current?.close();
   }
 
