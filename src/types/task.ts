@@ -7,14 +7,15 @@ export type Task = {
   text: string;
   detail?: string;
   finished: boolean;
-  isEditting: boolean; // 기본값 = false
-  ref: React.RefObject<HTMLInputElement | null> | null; // input ref 저장용
   date?: string; // 날짜 추가를 위한 필드
   tag?: Tag;
   subtask?: Array<SubTask>;
+  // 저장되지는 않는데 기능을 위해 필요한 필드
+  isEditting: boolean; // 기본값 = false
+  ref: React.RefObject<HTMLInputElement | null> | null; // input ref 저장용
 }
 
-export type TaskWithoutEditting = {
+export type TaskWithEssentials = {
   id: number;
   text: string;
   detail?: string;

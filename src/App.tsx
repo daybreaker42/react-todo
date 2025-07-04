@@ -26,7 +26,7 @@ function App() {
    * - 빈 문자열인 경우 에러 처리
    * @returns void
    * @example
-   * addTask(); // 사용자가 입력한 할 일을 taskList에 추가
+   * MARK: addTask(); // 사용자가 입력한 할 일을 taskList에 추가
    */
   const addTask = () => {
     const inputRef = addInputRef.current;
