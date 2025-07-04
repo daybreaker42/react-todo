@@ -54,9 +54,15 @@ export default function Modal({ content, closeModal }: ModalProps) {
           </label>
         </li>
         <li>
-          <label className='my-4 flex flex-col items-start gap-2'>
-            <h3>D-day 설정</h3>
+          {/* NOTE: 여기서 htmlFor 설정 안하면 button까지 label이 적용되어버림 */}
+          <label className='my-4 flex flex-col items-start gap-2' htmlFor='modal-date'>
+            <div className="flex justify-between w-full">
+              <h3>D-day 설정</h3>
+              {/* clear 버튼 누르면 date 지워짐 */}
+              <button className="hover:text-blue-500" onClick={() => { setDateValue('') }}>clear</button>
+            </div>
             <input
+              id='modal-date'
               type='date'
               className='outline-3 outline-white rounded focus:outline-blue-500 ml-2'
               value={dateValue}
