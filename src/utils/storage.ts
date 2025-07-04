@@ -13,7 +13,7 @@ const myStorage = window.localStorage;
  */
 export function setItem(todoList: Task[]): boolean {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const taskListWithEssentials = todoList.map(({ isEditting, ref, ...rest }) => rest);
+    const taskListWithEssentials: TaskWithEssentials[] = todoList.map(({ isEditting, ref, ...rest }) => rest);
     myStorage.setItem('todoList', JSON.stringify(taskListWithEssentials));
     return true;
 }
