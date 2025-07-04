@@ -1,6 +1,7 @@
 import type { Task } from "@/types/task";
 import Unfinished from '@/assets/icons/unfinished.svg?react';
 import Finished from '@/assets/icons/finished.svg?react';
+import { Calendar } from 'lucide-react';
 
 
 interface TaskProps{
@@ -29,7 +30,12 @@ export default function Task({ task, index, toggleFinished, editTask, removeTask
         <div className="flex flex-col">
           <span className='task-text'>{task.text}</span>
           {task.detail ? <span className="text-gray-500">{task.detail}</span> : null}
-          {task.date ? <span className="text-gray-500">{task.date}</span> : null}
+          {task.date ?
+            <div className="flex gap-2">
+              <Calendar width={20} color="gray" />
+              <span className="text-gray-500">{task.date}</span>
+            </div>
+            : null}
         </div>
       </div>
 
