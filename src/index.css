@@ -10,3 +10,12 @@
 body{
    @apply bg-black text-white;
 }
+
+/* 달력 아이콘 색상 변경 - Tailwind의 text-white 적용 */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* 흰색으로 보이게 */
+}
+/* Firefox 지원 (아이콘 색상은 완벽히 지원되지 않음) */
+input[type="date"] {
+  color-scheme: white;
+}

@@ -1,28 +1,25 @@
 import type { Task } from "@/types/task";
 
 interface TaskProps{
-  index: number;
   task: Task;
-  toggleFinished: (index: number)=>void;
-  taskInputRefList: React.RefObject<Map<number, HTMLInputElement | null>>;
+  index: number;
+  toggleFinished: (index: number) => void;
   editTask: (id: number)=>void;
   removeTask: (id: number)=>void;
 };
 
-export default function Task({task, index, toggleFinished, taskInputRefList, editTask, removeTask}: TaskProps){
+export default function Task({ task, index, toggleFinished, editTask, removeTask }: TaskProps) {
   return (
-    <li key={task.id} onDoubleClick={() => toggleFinished(task.id)}
-      className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${task.finished ? 'finished' : ''}`}>
-      {/* task 내용 */}
+    <>
       <div className='flex gap-2 items-center'>
         {/* line no */}
         <span className='w-8 px-1 border-r-2'>{index + 1}</span>
         {/* finished checker */}
-        <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(index)} tabIndex={-1}
+        <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(task.id)} tabIndex={-1}
           className='w-5 h-5 accent-blue-500' />
-        {task.isEditting ? (
+        {/* {task.isEditting ? (
           // 내용 input
-          <input type='text' defaultValue={task.text} id={`task-input-${index}`} ref={(el) => { (taskInputRefList.current.set(task.id, el)) }}
+          <input type='text' defaultValue={task.text} id={`task-input-${index}`} ref={task.ref}
             onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
               if (event.key === 'Enter') {
                 editTask(task.id);
@@ -32,7 +29,8 @@ export default function Task({task, index, toggleFinished, taskInputRefList, edi
         ) :
           // 내용 text
           <span className='task-text'>{task.text}</span>
-        }
+          } */}
+        <span className='task-text'>{task.text}</span>
       </div>
 
       {/* task 수정/삭제 버튼 */}
@@ -42,6 +40,6 @@ export default function Task({task, index, toggleFinished, taskInputRefList, edi
         </button>
         <button onClick={() => removeTask(task.id)} className='delete'>삭제</button>
       </div>
-    </li>
+    </>
   );
 }

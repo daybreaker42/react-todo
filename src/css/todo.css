@@ -1,9 +1,6 @@
 /* 공통적인 스타일링 설정 */
 
 /* 초기화 */
-input, button{
-    outline: none;
-}
 h2{
     @apply text-xl font-bold;
 }
@@ -23,6 +20,6 @@ button.delete{
     @apply border-2 border-red-500 hover:bg-red-500 text-white py-1 px-2 rounded;
 }
 /* finished에서 내용 취소선 처리 */
-.finished .todo-text{
+.finished .task-text{
     @apply line-through text-gray-500;
 }

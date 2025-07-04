@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef, createRef } from 'react';
 import type { Task } from '@/types/task';
 import { getItem, setItem } from '@/utils/storage';
+import Modal from '@/components/Modal';
+import TaskC from './components/Task';
 
 function App() {
   const addInputRef = useRef<HTMLInputElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null); // 모달 ref 타입 지정
+
   // task 정보 저장하는 리스트
   const [taskList, setTaskList] = useState<Task[]>(() => {
     return getItem();
@@ -50,6 +54,11 @@ function App() {
    * MARK: editTask - 할 일 수정 함수
    */
   const editTask = (id: number) => {
+    toggleTaskEdit(id);
+    openModal();
+  }
+
+  const toggleTaskEdit = (id: number) => {
     setTaskList(prevList =>
       prevList.map(task => {
         if (task.id !== id) return task;
@@ -102,6 +111,20 @@ function App() {
     }));
   }
 
+  /**
+   * modal open
+   */
+  const openModal = () => {
+    modalRef.current?.showModal();
+  }
+
+  /**
+   * modal close
+   */
+  const closeModal = () => {
+    modalRef.current?.close();
+  }
+
   // 키보드 이벤트 핸들러
   // - Enter 키를 누르면 addTask 함수 호출
   const addKeyHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -118,6 +141,7 @@ function App() {
   // MARK: 앱 시작
   return (
     <>
+      <Modal modalRef={modalRef} closeModal={closeModal} taskList={taskList} setTaskList={setTaskList} />
       {/* wrapper div */}
       <div className="container mx-auto max-w-3xl p-2">
         {/* title image */}
@@ -128,7 +152,7 @@ function App() {
         {/* 할 일 추가 부분 */}
         <div className='mt-8 flex justify-between items-center gap-4'>
           <input type="text" placeholder='할 일을 입력하세요' ref={addInputRef} onKeyDown={addKeyHandler}
-            className='h-10 w-full border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2 rounded' />
+            className='h-10 w-full border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2 rounded outline-none' />
           <button onClick={addTask} ref={addButtonRef} className='w-36 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'>추가하기</button>
         </div>
 
@@ -141,36 +165,9 @@ function App() {
           {taskList.filter(task => !task.finished).map((task, index) => {
             return (
               <li key={task.id} onDoubleClick={() => toggleFinished(task.id)}
-                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${task.finished ? 'finished' : ''}`}>
+                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center`}>
                 {/* task 내용 */}
-                <div className='flex gap-2 items-center'>
-                  {/* line no */}
-                  <span className='w-8 px-1 border-r-2'>{index + 1}</span>
-                  {/* finished checker */}
-                  <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(task.id)} tabIndex={-1}
-                    className='w-5 h-5 accent-blue-500' />
-                  {task.isEditting ? (
-                    // 내용 input
-                    <input type='text' defaultValue={task.text} id={`task-input-${index}`} ref={task.ref}
-                      onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (event.key === 'Enter') {
-                          editTask(task.id);
-                        }
-                      }}
-                      className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
-                  ) :
-                    // 내용 text
-                    <span className='task-text'>{task.text}</span>
-                  }
-                </div>
-
-                {/* task 수정/삭제 버튼 */}
-                <div className='flex gap-4'>
-                  <button onClick={() => editTask(task.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                    {!task.isEditting ? '수정' : '수정 완료'}
-                  </button>
-                  <button onClick={() => removeTask(task.id)} className='delete'>삭제</button>
-                </div>
+                <TaskC index={index} task={task} toggleFinished={toggleFinished} editTask={editTask} removeTask={removeTask} />
               </li>
             );
           })}
@@ -185,42 +182,22 @@ function App() {
           {taskList.filter(task => task.finished).map((task, index) => {
             return (
               <li key={task.id} onDoubleClick={() => toggleFinished(task.id)}
-                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center ${task.finished ? 'finished' : ''}`}>
+                className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center finished`}>
                 {/* task 내용 */}
-                <div className='flex gap-2 items-center'>
-                  {/* line no */}
-                  <span className='w-8 px-1 border-r-2'>{index + 1}</span>
-                  {/* finished checker */}
-                  <input type="checkbox" checked={task.finished} onChange={() => toggleFinished(task.id)} tabIndex={-1}
-                    className='w-5 h-5 accent-blue-500' />
-                  {task.isEditting ? (
-                    // 내용 input
-                    <input type='text' defaultValue={task.text} id={`task-input-${index}`} ref={task.ref}
-                      onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (event.key === 'Enter') {
-                          editTask(task.id);
-                        }
-                      }}
-                      className={`border-2 border-gray-400 focus:border-blue-500 focus:border-2 p-2`} />
-                  ) :
-                    // 내용 text
-                    <span className='task-text'>{task.text}</span>
-                  }
-                </div>
-
-                {/* task 수정/삭제 버튼 */}
-                <div className='flex gap-4'>
-                  <button onClick={() => editTask(task.id)} className='border-2 border-green-500 hover:bg-green-500 text-white py-1 px-2 rounded'>
-                  {!task.isEditting ? '수정' : '수정 완료'}
-                  </button>
-                  <button onClick={() => removeTask(task.id)} className='delete'>삭제</button>
-                </div>
+                <TaskC index={index} task={task} toggleFinished={toggleFinished} editTask={editTask} removeTask={removeTask} />
               </li>
             );
           })}
         </ul>
 
       </div>
+      <button onClick={() => {
+        if (modalRef.current?.open) {
+          closeModal();
+        } else {
+          openModal();
+        }
+      }}>모달 토글</button>
     </>
   )
 }
