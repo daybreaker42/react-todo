@@ -2,7 +2,10 @@ import { useState, useEffect, useRef, createRef } from 'react';
 import type { Task } from '@/types/task';
 import { getItem, setItem } from '@/utils/storage';
 import Modal from '@/components/Modal';
-import TaskC from './components/Task';
+import TaskC from '@/components/Task';
+
+// svg icons
+import Icon from '@/assets/icons/icon.svg?react';
 
 function App() {
   const addInputRef = useRef<HTMLInputElement>(null);
@@ -145,7 +148,7 @@ function App() {
       {/* wrapper div */}
       <div className="container mx-auto max-w-3xl p-2">
         {/* title image */}
-        <img src='./icon.webp' className='w-25 mx-auto' />
+        <Icon width={100} height={100} className='mx-auto' />
         {/* 제목 부분 */}
         <h1 className='text-2xl font-bold text-center'>To-do List</h1>
         {/* <h2>할 일 추가</h2> */}

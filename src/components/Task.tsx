@@ -1,6 +1,6 @@
 import type { Task } from "@/types/task";
-import Unfinished from '@/assets/icons/unfinished.svg?react'; // SVG를 기본 모듈로 가져오기
-import Finished from '@/assets/icons/finished.svg?react'; // SVG를 기본 모듈로 가져오기
+import Unfinished from '@/assets/icons/unfinished.svg?react';
+import Finished from '@/assets/icons/finished.svg?react';
 
 
 interface TaskProps{
