@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Modal } from "@/types/task";
 
 interface ModalProps{
@@ -11,13 +11,17 @@ export default function Modal({ content, closeModal }: ModalProps) {
   const [textVal, setTextVal] = useState(content.text);
   const [detailVal, setDetailVal] = useState(content.detail ?? '');
   const [dateValue, setDateValue] = useState(content.date ?? '');
+  const textRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    console.log(`content - ${JSON.stringify(content)}`);
-    console.log(`textVal - ${JSON.stringify(textVal)}`);
-    console.log(`detailVal - ${JSON.stringify(detailVal)}`);
-    console.log(`dateValue - ${JSON.stringify(dateValue)}`);
-  }, []);
+    // console.log(`content - ${JSON.stringify(content)}`);
+    // console.log(`textVal - ${JSON.stringify(textVal)}`);
+    // console.log(`detailVal - ${JSON.stringify(detailVal)}`);
+    // console.log(`dateValue - ${JSON.stringify(dateValue)}`);
+    if (textRef.current) {
+      textRef.current.focus();
+    }
+  }, [content]);
 
   useEffect(() => {
     setTextVal(content.text);
@@ -30,14 +34,15 @@ export default function Modal({ content, closeModal }: ModalProps) {
     <>
       <header className='flex justify-between'>
         <h2>할 일 수정</h2>
-        <button onClick={() => { closeModal(); }} className='hover:text-blue-500'>close</button>
+        <button onClick={() => { closeModal(); }} className='hover:text-gray-400'>close</button>
       </header>
       <ul>
         <li>
           <label className='my-4 flex flex-col items-start gap-2'>
             <h3>할 일 내용</h3>
             <input
-              className='outline-3 outline-white rounded focus:outline-blue-500 w-full ml-2'
+              ref={textRef}
+              className='outline-2 outline-white rounded focus:outline-blue-500 w-full ml-2 px-2 py-1'
               value={textVal}
               onChange={e => setTextVal(e.target.value)} // 주석: 로컬 상태로 관리
             />
@@ -47,7 +52,7 @@ export default function Modal({ content, closeModal }: ModalProps) {
           <label className='my-4 flex flex-col items-start gap-2'>
             <h3>상세 내용</h3>
             <input
-              className='outline-3 outline-white rounded focus:outline-blue-500 w-full ml-2'
+              className='outline-2 outline-white rounded focus:outline-blue-500 w-full ml-2 px-2 py-1'
               value={detailVal}
               onChange={e => setDetailVal(e.target.value)} // 주석: 로컬 상태로 관리
             />
@@ -59,12 +64,12 @@ export default function Modal({ content, closeModal }: ModalProps) {
             <div className="flex justify-between w-full">
               <h3>D-day 설정</h3>
               {/* clear 버튼 누르면 date 지워짐 */}
-              <button className="hover:text-blue-500" onClick={() => { setDateValue('') }}>clear</button>
+              <button className="hover:text-red-500" onClick={() => { setDateValue('') }}>clear date</button>
             </div>
             <input
               id='modal-date'
               type='date'
-              className='outline-3 outline-white rounded focus:outline-blue-500 ml-2'
+              className='outline-2 outline-white rounded focus:outline-blue-500 ml-2 px-2 py-1 w-full'
               value={dateValue}
               onFocus={e => { if (e.target.showPicker) e.target.showPicker(); }}
               onChange={e => setDateValue(e.target.value)} // 주석: 로컬 상태로 관리

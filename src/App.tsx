@@ -41,7 +41,7 @@ function App() {
   useEffect(() => {
     if (modalContent.taskId !== -1) {
       // console.log(`currTask - ${JSON.stringify(currTask)}`);
-      console.log(`modalContent - ${JSON.stringify(modalContent)}`);
+      // console.log(`modalContent - ${JSON.stringify(modalContent)}`);
 
       openModal();
     }
