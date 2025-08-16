@@ -240,11 +240,11 @@ function App() {
         </div>
 
         {/* 할 일 목록 */}
-        <div className='flex justify-between items-center mt-8'>
+        <div className='flex justify-between items-center mt-4'>
           <h2>할 일 목록</h2>
           <button onClick={clearTask} className='delete'>전체 삭제</button>
         </div>
-        <ul id="ongoing-content" className='mt-2 p-4'>
+        <ul id="ongoing-content" className='mt-2 px-4'>
           {taskList.filter(task => !task.finished).map((task, index) => {
             return (
               <li key={task.id} className={`border-b-1 last:border-none border-gray-300 p-2 flex justify-between items-center`}>
@@ -255,7 +255,7 @@ function App() {
         </ul>
 
         {/* 완료된 할 일 보기 */}
-        <div className='flex justify-between items-center mt-8'>
+        <div className='flex justify-between items-center mt-4'>
           <h2>완료된 할 일 목록</h2>
           {/* <button onClick={clearTask} className='delete'>전체 삭제</button> */}
         </div>
